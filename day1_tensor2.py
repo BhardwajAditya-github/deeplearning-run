@@ -31,3 +31,6 @@ print(f"Data Type: {tensor_info.dtype}")
 end_time = time.time()
 
 print(f"\nTime taken: {end_time - start_time:.6f} seconds")
+
+ranged_tensor = torch.arange(1,10,1)
+print(ranged_tensor)
