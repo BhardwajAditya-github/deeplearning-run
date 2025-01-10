@@ -2,28 +2,28 @@ import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
 
-def plot_predictions(train_data=X_Train, 
-                     train_labels=X_Train, 
-                     test_data=X_Test, 
-                     test_labels=y_Test, 
-                     predictions=None):
-  """
-  Plots training data, test data and compares predictions.
-  """
-  plt.figure(figsize=(10, 7))
+# def plot_predictions(train_data=X_Train, 
+#                      train_labels=X_Train, 
+#                      test_data=X_Test, 
+#                      test_labels=y_Test, 
+#                      predictions=None):
+#   """
+#   Plots training data, test data and compares predictions.
+#   """
+#   plt.figure(figsize=(10, 7))
 
-  # Plot training data in blue
-  plt.scatter(train_data, train_labels, c="b", s=4, label="Training data")
+#   # Plot training data in blue
+#   plt.scatter(train_data, train_labels, c="b", s=4, label="Training data")
   
-  # Plot test data in green
-  plt.scatter(test_data, test_labels, c="g", s=4, label="Testing data")
+#   # Plot test data in green
+#   plt.scatter(test_data, test_labels, c="g", s=4, label="Testing data")
 
-  if predictions is not None:
-    # Plot the predictions in red (predictions were made on the test data)
-    plt.scatter(test_data, predictions, c="r", s=4, label="Predictions")
+#   if predictions is not None:
+#     # Plot the predictions in red (predictions were made on the test data)
+#     plt.scatter(test_data, predictions, c="r", s=4, label="Predictions")
 
-  # Show the legend
-  plt.legend(prop={"size": 14});
+#   # Show the legend
+#   plt.legend(prop={"size": 14});
 
 weight = 10
 bias = 5
@@ -68,13 +68,40 @@ class LinearRegressionMode(nn.Module):
 
 model = LinearRegressionMode()
 model_params = list(model.parameters())
-print(model_params)
 print(model.state_dict())
 
 with torch.inference_mode():
     y_preds = model(X_Test)
 
-print(y_preds)
+# print(y_preds)
 
 loss_fn = nn.L1Loss()
-optimizer = torch.optim.SGD(params=model.parameters(),lr=0.01)
+optimizer = torch.optim.SGD(params=model.parameters(),lr=0.1)
+
+print(f"Before Training - {list(model.parameters())}")
+
+# building training loop
+epochs = 300
+
+for epoch in range(epochs):
+  print(f"Epoch {epoch}")
+  model.train() # Tracking gradient
+
+  y_preds = model(X_Train)
+  loss = loss_fn(y_preds, Y_Train)
+
+  # Optimize zero grad
+  optimizer.zero_grad()
+
+  # Backpropagation on loss wrt to params of model
+  loss.backward()
+
+  # Progress the optimizer
+  optimizer.step()
+
+
+  model.eval() # Stop Tracking gradient
+  print(f"After Training - {list(model.parameters())}")
+
+
+
