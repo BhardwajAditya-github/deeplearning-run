@@ -25,10 +25,10 @@ import matplotlib.pyplot as plt
 #   # Show the legend
 #   plt.legend(prop={"size": 14});
 
-weight = 10
-bias = 5
+weight = 0.7
+bias = 0.3
 start = 0 
-end = 1
+end = 2
 step = .02
 
 torch.manual_seed(42)
@@ -76,12 +76,12 @@ with torch.inference_mode():
 # print(y_preds)
 
 loss_fn = nn.L1Loss()
-optimizer = torch.optim.SGD(params=model.parameters(),lr=0.1)
+optimizer = torch.optim.SGD(params=model.parameters(),lr=0.01)
 
 print(f"Before Training - {list(model.parameters())}")
 
 # building training loop
-epochs = 300
+epochs = 85
 
 for epoch in range(epochs):
   print(f"Epoch {epoch}")
@@ -99,9 +99,18 @@ for epoch in range(epochs):
   # Progress the optimizer
   optimizer.step()
 
-
   model.eval() # Stop Tracking gradient
+
+  with torch.inference_mode():
+      # 1. Forward pass on test data
+      test_pred = model(X_Test)
+
+      # 2. Caculate loss on test data
+      test_loss = loss_fn(test_pred, Y_Test.type(torch.float))
+
   print(f"After Training - {list(model.parameters())}")
 
 
 
+test_predictn = model(4)
+print(test_predictn)
