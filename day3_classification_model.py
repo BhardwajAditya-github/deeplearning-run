@@ -6,7 +6,7 @@ from torch import nn
 
 device = "cuda" if torch.cuda.is_available else "cpu"
 
-X,Y = sklearn.datasets.make_circles(n_samples= 1000, noise=0.02, random_state=42)
+X,Y = sklearn.datasets.make_circles(n_samples= 1000, noise=0.03, random_state=42)
 
 X = torch.from_numpy(X).type(torch.float)
 Y = torch.from_numpy(Y).type(torch.float)
@@ -66,8 +66,8 @@ class NonLinearModel(nn.Module):
     def __init__(self):
         super().__init__()
         self.layer1 = nn.Linear(in_features=2, out_features=10)
-        self.layer2 = nn.Linear(in_features=10, out_features=2)
-        self.layer3 = nn.Linear(in_features=2, out_features=1)
+        self.layer2 = nn.Linear(in_features=10, out_features=10)
+        self.layer3 = nn.Linear(in_features=10, out_features=1)
         self.relu = nn.ReLU()
 
     def forward(self, x):
@@ -90,7 +90,7 @@ modelData()
 # y_pred_labels = torch.round(torch.sigmoid(CircleClassifierPreBuilt(X_test)[:5]))
 
 
-epochs = 300
+epochs = 1600
 
 for epoch in range(epochs):
 
