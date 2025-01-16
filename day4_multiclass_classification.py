@@ -47,8 +47,8 @@ device = "cuda" if torch.cuda.is_available else "cpu"
 # Split Data
 
 X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X, y, test_size=0.2, random_state=42)
-data_information(X_train, X_test)
-data_information(y_train, y_test)
+# data_information(X_train, X_test)
+# data_information(y_train, y_test)
 
 class MultiClassClassification(nn.Module):
     def __init__(self):
@@ -64,17 +64,19 @@ class MultiClassClassification(nn.Module):
     
 MultiClassify = MultiClassClassification()
 
-loss_fcn = nn.BCEWithLogitsLoss()
+loss_fcn = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(MultiClassify.parameters(), lr=0.01)
 
 # Model Training
+
+# print(MultiClassify(X_train).softmax(dim=1))
 
 epochs = 100
 
 for epoch in range(epochs):
     MultiClassify.train()
 
-    train_pred = MultiClassify(X_train)
+    train_pred = MultiClassify(X_train).softmax(dim=1)
     train_pred_not_in_logits = torch.round(torch.sigmoid(train_pred.squeeze()))
     train_loss = loss_fcn(y_train, train_pred)
 
@@ -88,7 +90,7 @@ for epoch in range(epochs):
     optimizer.step()
 
     with torch.inference_mode():
-        test_pred = MultiClassify(X_test)
+        test_pred = MultiClassify(X_test).softmax(dim=1)
         test_pred_not_in_logits = torch.round(torch.sigmoid(test_pred.squeeze()))
         test_loss = loss_fcn(test_pred, y_test)
 
