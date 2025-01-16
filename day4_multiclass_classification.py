@@ -65,7 +65,7 @@ class MultiClassClassification(nn.Module):
 MultiClassify = MultiClassClassification()
 
 loss_fcn = nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(MultiClassify.parameters(), lr=0.01)
+optimizer = torch.optim.SGD(MultiClassify.parameters(), lr=0.1)
 
 # Model Training
 
@@ -76,12 +76,12 @@ epochs = 100
 for epoch in range(epochs):
     MultiClassify.train()
 
-    train_pred = MultiClassify(X_train).softmax(dim=1)
-    train_pred_not_in_logits = torch.round(torch.sigmoid(train_pred.squeeze()))
-    train_loss = loss_fcn(y_train, train_pred)
+    train_pred_with_logits = MultiClassify(X_train)
+    train_pred_without_logits = torch.softmax(train_pred_with_logits, dim=1).argmax(dim=1)
+    train_loss = loss_fcn(train_pred_with_logits, y_train)
 
-    train_acc = accuracy_fn(y_true=y_train,
-                               y_pred=train_pred_not_in_logits)
+    train_acc = accuracy_fn(y_true=y_train.argmax(dim=1),
+                               y_pred=train_pred_without_logits)
 
     optimizer.zero_grad()
     train_loss.backward()
@@ -90,11 +90,11 @@ for epoch in range(epochs):
     optimizer.step()
 
     with torch.inference_mode():
-        test_pred = MultiClassify(X_test).softmax(dim=1)
-        test_pred_not_in_logits = torch.round(torch.sigmoid(test_pred.squeeze()))
-        test_loss = loss_fcn(test_pred, y_test)
+        test_pred_with_logits = MultiClassify(X_test)
+        test_pred_not_in_logits = torch.softmax(test_pred_with_logits, dim=1).argmax(dim=1)
+        test_loss = loss_fcn(test_pred_with_logits, y_test)
 
-        test_acc = accuracy_fn(y_true=y_test,
+        test_acc = accuracy_fn(y_true=y_test.argmax(dim=1),
                                y_pred=test_pred_not_in_logits)
 
     # Print out what's happening every 10 epochs
