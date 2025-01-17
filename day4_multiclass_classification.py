@@ -34,10 +34,18 @@ def accuracy_fn(y_true, y_pred):
     return acc
 
 dataset_size = 1000
+NUM_CLASSES = 4
+NUM_FEATURES = 2
+RANDOM_SEED = 42
+X,y = datasets.make_blobs(n_samples=dataset_size,
+    n_features=NUM_FEATURES, # X features
+    centers=NUM_CLASSES, # y labels 
+    cluster_std=1.5, # give the clusters a little shake up (try changing this to 1.0, the default)
+    random_state=RANDOM_SEED
+)
 
-X,y = datasets.make_multilabel_classification(n_samples=dataset_size)
 X = torch.from_numpy(X).type(torch.float)
-y = torch.from_numpy(y).type(torch.float)
+y = torch.from_numpy(y).type(torch.LongTensor)
 
 # data_information(X, y)
 # visualizer(X, y)
@@ -53,9 +61,9 @@ X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X, y
 class MultiClassClassification(nn.Module):
     def __init__(self):
         super().__init__();
-        self.layer1 = nn.Linear(in_features=20, out_features=160)
-        self.layer2 = nn.Linear(in_features=160, out_features=160)
-        self.layer3 = nn.Linear(in_features=160, out_features=5)
+        self.layer1 = nn.Linear(in_features=2, out_features=8)
+        self.layer2 = nn.Linear(in_features=8, out_features=8)
+        self.layer3 = nn.Linear(in_features=8, out_features=4)
         self.relu = nn.ReLU()
 
 
@@ -80,7 +88,7 @@ for epoch in range(epochs):
     train_pred_without_logits = torch.softmax(train_pred_with_logits, dim=1).argmax(dim=1)
     train_loss = loss_fcn(train_pred_with_logits, y_train)
 
-    train_acc = accuracy_fn(y_true=y_train.argmax(dim=1),
+    train_acc = accuracy_fn(y_true=y_train,
                                y_pred=train_pred_without_logits)
 
     optimizer.zero_grad()
@@ -94,7 +102,7 @@ for epoch in range(epochs):
         test_pred_not_in_logits = torch.softmax(test_pred_with_logits, dim=1).argmax(dim=1)
         test_loss = loss_fcn(test_pred_with_logits, y_test)
 
-        test_acc = accuracy_fn(y_true=y_test.argmax(dim=1),
+        test_acc = accuracy_fn(y_true=y_test,
                                y_pred=test_pred_not_in_logits)
 
     # Print out what's happening every 10 epochs
