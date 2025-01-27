@@ -1,0 +1,21 @@
+{
+    "tasks": {
+      "January 28": ["Finalize scope and requirements", "Set up development environment"],
+      "January 29": ["Collect datasets for all models", "Preprocess data using Librosa"],
+      "January 30": ["Start prototyping manipulation detection model", "Preprocess audio data"],
+      "January 31": ["Build tone and stress level detection model", "Test manipulation detection model"],
+      "February 1": ["Evaluate models for accuracy", "Optimize models for mobile"],
+      "February 2": ["Convert models to TensorFlow Lite", "Test for latency issues"],
+      "February 3": ["Finalize backend endpoints for real-time audio analysis"]
+    },
+    "motivations": [
+      "You're doing great! Keep going!",
+      "Remember, one step at a time leads to big success!",
+      "Every task you complete is a step closer to your dream!",
+      "Stay focused and crush your goals today!",
+      "You're unstoppable! Keep up the amazing work!",
+      "Hard work beats talent when talent doesn’t work hard!",
+      "Small progress is still progress. Keep at it!"
+    ]
+  }
+  
